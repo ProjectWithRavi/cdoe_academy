@@ -7,6 +7,7 @@ const Upgradeplanmodel = require("../Model/Upgradeplan");
 const userCourseModel = require("../Model/Usercourse");
 const ProjectModel = require("../Model/Project");
 const Eventmodel = require("../Model/Event");
+const Allcoursemodel = require("../Model/Allcourse");
 
 
 const getAllData = async (req, res) => {
@@ -207,6 +208,21 @@ const updateEvent = async(req,res)=>{
   }
 }
 
+
+
+const getAllCourses = async (req, res) => {
+  try {
+    const courses = await Allcoursemodel.find();
+    res.status(200).json(courses);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      message: "An error occurred while fetching courses.",
+      error: error.message,
+    });
+  }
+};
+
 module.exports = {
   getAllData,
   userSignUp,
@@ -217,5 +233,6 @@ module.exports = {
   BusinessmodelController,
   getproject,
   getEvent,
-  updateEvent
+  updateEvent,
+  getAllCourses
 };

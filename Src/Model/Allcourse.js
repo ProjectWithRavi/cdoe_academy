@@ -36,3 +36,5 @@ const Allcourseschema = mongoose.Schema({
 });
 
 const Allcoursemodel = mongoose.model("Allcoursemodel", Allcourseschema);
+
+module.exports = Allcoursemodel
