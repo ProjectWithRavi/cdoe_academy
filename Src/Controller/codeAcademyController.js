@@ -5,6 +5,9 @@ const { signUpModel } = require("../Model/signUp");
 const studentMembershipModal = require("../Model/StudentMembership");
 const Upgradeplanmodel = require("../Model/Upgradeplan");
 const userCourseModel = require("../Model/Usercourse");
+const ProjectModel = require("../Model/Project");
+const Eventmodel = require("../Model/Event");
+
 
 const getAllData = async (req, res) => {
   try {
@@ -161,6 +164,49 @@ const BusinessmodelController = async (req, res) => {
   }
 };
 
+
+
+const getproject = async (req,res)=>{
+  try {
+    let project = await ProjectModel.find({})
+    res.send(project)
+  } catch (error) {
+    console.log(error);
+  }
+}
+const getEvent = async (req,res)=>{
+  try {
+    let event = await Eventmodel.find({})
+    res.send({event})
+  } catch (error) {
+    console.log(error);
+    res.send(error)
+    
+  }
+}
+
+const updateEvent = async(req,res)=>{
+  try {
+    const id = req.params.id;
+
+    console.log(id)
+    const updateEvent = await Eventmodel.findByIdAndUpdate(id,
+      { $inc: { Total_user: 1 } }, // Increment Total_user by 1
+      { new: true })
+    console.log(updateEvent);
+  //   if (!updatedEvent) {
+  //     return res.status(404).json({ message: 'Event not found', });
+  // }
+  res.status(200).json({
+      message: 'Event updated successfully',updateEvent,
+  });
+  } catch (error) {
+    console.log(error);
+    res.send(error)
+    
+  }
+}
+
 module.exports = {
   getAllData,
   userSignUp,
@@ -169,4 +215,7 @@ module.exports = {
   upgradePlaneController,
   studentMembershipController,
   BusinessmodelController,
+  getproject,
+  getEvent,
+  updateEvent
 };
