@@ -16,7 +16,7 @@ const getAllData = async (req, res) => {
   }
 };
 
-//rftgtt tgttgttg
+//rftgtt tgttgttg tgtg
 
 const userSignUp = async (req, res) => {
   try {
