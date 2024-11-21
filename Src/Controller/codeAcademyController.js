@@ -16,6 +16,8 @@ const getAllData = async (req, res) => {
   }
 };
 
+//rftgtt tgttgttg
+
 const userSignUp = async (req, res) => {
   try {
     const { Mobile_Number, Email, Password } = req.body;
