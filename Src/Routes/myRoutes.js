@@ -12,6 +12,8 @@ const {
   getEvent,
   updateEvent,
   getAllCourses,
+  createCourseTopic,
+  filterCourseTopic,
 } = require("../Controller/codeAcademyController");
 const { projectcreate, Eventcreate, AllCourseCreate } = require("../Controller/backController");
 const Router = express.Router();
@@ -30,6 +32,9 @@ Router.get("/getEvent",getEvent);
 Router.put("/updateevent/:id",updateEvent)
 Router.post("/addAllCourses" , AllCourseCreate)
 Router.post("/getAllCourses" , getAllCourses)
+
+Router.post("/create-course-topic", createCourseTopic);
+Router.get("/filter-course-topic", filterCourseTopic);
 module.exports = Router;
 
 // custom error
