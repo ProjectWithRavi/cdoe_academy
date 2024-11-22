@@ -8,7 +8,6 @@ const userCourseModel = require("../Model/Usercourse");
 const ProjectModel = require("../Model/Project");
 const Eventmodel = require("../Model/Event");
 
-
 const getAllData = async (req, res) => {
   try {
     let allData = await allUserInformation.find({});
@@ -19,16 +18,18 @@ const getAllData = async (req, res) => {
   }
 };
 
-//rftgtt tgttgttg tgtg
-
 const userSignUp = async (req, res) => {
   try {
     const { Mobile_Number, Email, Password } = req.body;
+    const existing_user = await signUpModel.find({ Mobile_Number });
+    console.log(existing_user);
     const mySignUp = await signUpModel.create({
       Mobile_Number,
       Email,
       Password,
     });
+
+    // add id in allUserInformation modal
     await allUserInformation.create({
       userSignUp: mySignUp._id,
     });
@@ -164,48 +165,47 @@ const BusinessmodelController = async (req, res) => {
   }
 };
 
-
-
-const getproject = async (req,res)=>{
+const getproject = async (req, res) => {
   try {
-    let project = await ProjectModel.find({})
-    res.send(project)
+    let project = await ProjectModel.find({});
+    res.send(project);
   } catch (error) {
     console.log(error);
   }
-}
-const getEvent = async (req,res)=>{
+};
+const getEvent = async (req, res) => {
   try {
-    let event = await Eventmodel.find({})
-    res.send({event})
+    let event = await Eventmodel.find({});
+    res.send({ event });
   } catch (error) {
     console.log(error);
-    res.send(error)
-    
+    res.send(error);
   }
-}
+};
 
-const updateEvent = async(req,res)=>{
+const updateEvent = async (req, res) => {
   try {
     const id = req.params.id;
 
-    console.log(id)
-    const updateEvent = await Eventmodel.findByIdAndUpdate(id,
+    console.log(id);
+    const updateEvent = await Eventmodel.findByIdAndUpdate(
+      id,
       { $inc: { Total_user: 1 } }, // Increment Total_user by 1
-      { new: true })
+      { new: true }
+    );
     console.log(updateEvent);
-  //   if (!updatedEvent) {
-  //     return res.status(404).json({ message: 'Event not found', });
-  // }
-  res.status(200).json({
-      message: 'Event updated successfully',updateEvent,
-  });
+    //   if (!updatedEvent) {
+    //     return res.status(404).json({ message: 'Event not found', });
+    // }
+    res.status(200).json({
+      message: "Event updated successfully",
+      updateEvent,
+    });
   } catch (error) {
     console.log(error);
-    res.send(error)
-    
+    res.send(error);
   }
-}
+};
 
 module.exports = {
   getAllData,
@@ -217,5 +217,5 @@ module.exports = {
   BusinessmodelController,
   getproject,
   getEvent,
-  updateEvent
+  updateEvent,
 };
