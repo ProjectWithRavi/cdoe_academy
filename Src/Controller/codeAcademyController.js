@@ -7,6 +7,10 @@ const Upgradeplanmodel = require("../Model/Upgradeplan");
 const userCourseModel = require("../Model/Usercourse");
 const ProjectModel = require("../Model/Project");
 const Eventmodel = require("../Model/Event");
+const Allcoursemodel = require("../Model/Allcourse");
+const CourseTopicmodel = require("../Model/CourseTopic");
+const zod = require("zod");
+const bcrypt = require("bcrypt");
 
 const getAllData = async (req, res) => {
   try {
@@ -21,8 +25,18 @@ const getAllData = async (req, res) => {
 const userSignUp = async (req, res) => {
   try {
     const { Mobile_Number, Email, Password } = req.body;
-    const existing_user = await signUpModel.find({ Mobile_Number });
-    console.log(existing_user);
+    const Validation = zod.object({
+      Mobile_Number: zod.number(),
+      Email: zod.string(),
+      Password: zod.string(),
+    });
+
+    await Validation.parse(req.body);
+    const existing_user = await signUpModel.find({ Email });
+    if (existing_user.length > 0) {
+      return res.status(409).send({ Message: "user already existing" });
+    }
+
     const mySignUp = await signUpModel.create({
       Mobile_Number,
       Email,
@@ -34,9 +48,9 @@ const userSignUp = async (req, res) => {
       userSignUp: mySignUp._id,
     });
 
-    res.status(200).send({ mySignUp, Message: "signup successFully" });
+    return res.status(200).send({ mySignUp, Message: "signup successFully" });
   } catch (error) {
-    res.status(500).send(error);
+    return res.status(500).send(error);
   }
 };
 
@@ -207,6 +221,71 @@ const updateEvent = async (req, res) => {
   }
 };
 
+const getAllCourses = async (req, res) => {
+  try {
+    const courses = await Allcoursemodel.find();
+    res.status(200).json(courses);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      message: "An error occurred while fetching courses.",
+      error: error.message,
+    });
+  }
+};
+
+const createCourseTopic = async (req, res) => {
+  try {
+    const { Mytopic } = req.body;
+
+    if (!Array.isArray(Mytopic) || Mytopic.length === 0) {
+      return res.status(400).json({
+        message: "Mytopic must be a non-empty array.",
+      });
+    }
+
+    const newTopic = new CourseTopicmodel({ Mytopic });
+    await newTopic.save();
+
+    res.status(201).json({
+      message: "Course topic created successfully!",
+      topic: newTopic,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      message: "An error occurred while creating the course topic.",
+      error: error.message,
+    });
+  }
+};
+const filterCourseTopic = async (req, res) => {
+  try {
+    const { keyword } = req.query;
+
+    if (!keyword) {
+      return res.status(400).json({
+        message: "Keyword query parameter is required.",
+      });
+    }
+
+    const filteredTopics = await CourseTopicmodel.find({
+      Mytopic: { $regex: keyword, $options: "i" }, // Case-insensitive partial match
+    });
+
+    res.status(200).json({
+      message: "Filtered topics retrieved successfully!",
+      topics: filteredTopics,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      message: "An error occurred while filtering topics.",
+      error: error.message,
+    });
+  }
+};
+
 module.exports = {
   getAllData,
   userSignUp,
@@ -218,4 +297,8 @@ module.exports = {
   getproject,
   getEvent,
   updateEvent,
+  getAllCourses,
+
+  createCourseTopic,
+  filterCourseTopic,
 };

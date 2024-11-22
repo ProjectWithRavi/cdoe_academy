@@ -1,5 +1,6 @@
 const Eventmodel = require('../Model/Event')
 const ProjectModel = require('../Model/Project')
+const Allcoursemodel = require('../Model/Allcourse')
 const projectcreate = async(req,res)=>{
     try {
         const {Tittle,Description,Text} = req.body
@@ -27,5 +28,47 @@ const Eventcreate = async(req,res)=>{
         
     }
 }
+const AllCourseCreate = async (req, res) => {
+    try {
+        const {
+            CourseType,
+            CourseParent,
+            CourseName,
+            Courseheading,
+            Descripation,
+            Coursestage,
+            Time,
+            Certification,
+            userInclude,
+            Courseinclude,
+        } = req.body;
 
-module.exports = {projectcreate,Eventcreate}
+        const newCourse = await Allcoursemodel.create({
+            CourseType,
+            CourseParent,
+            CourseName,
+            Courseheading,
+            Descripation,
+            Coursestage,
+            Time,
+            Certification,
+            userInclude,
+            Courseinclude,
+        });
+
+        await newCourse.save();
+
+        res.status(201).json({
+            message: "Course created successfully!",
+            course: newCourse,
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            message: "An error occurred while creating the course.",
+            error: error.message,
+        });
+    }
+};
+
+module.exports = {projectcreate,Eventcreate , AllCourseCreate}
