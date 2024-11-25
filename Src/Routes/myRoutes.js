@@ -16,6 +16,9 @@ const {
   filterCourseTopic,
 } = require("../Controller/codeAcademyController");
 const { projectcreate, Eventcreate, AllCourseCreate } = require("../Controller/backController");
+const Course = require("../Controller/trandingLang");
+const { tryCatchHandler } = require("../utils/tryCatchHandler");
+const upload = require("../Middleware/multer");
 const Router = express.Router();
 
 Router.get("/getAllData", getAllData);
@@ -35,6 +38,18 @@ Router.post("/getAllCourses" , getAllCourses)
 
 Router.post("/create-course-topic", createCourseTopic);
 Router.get("/filter-course-topic", filterCourseTopic);
+Router.post('/create', upload.single('thumbnail'),(req, res) => {
+  tryCatchHandler(Course.CreateCourse, req, res);
+})
+Router.get('/allCourses', (req, res) => {
+  tryCatchHandler(Course.GetCourses, req, res)
+})
+Router.put('/courses/:id', (req, res) => {
+  tryCatchHandler(Course.UpdateCourse, req, res)
+});
+Router.delete('/courses/:id', (req, res) => {
+  tryCatchHandler(Course.DeleteCourse, req, res)
+});
 module.exports = Router;
 
 // custom error
