@@ -22,6 +22,7 @@ const getAllData = async (req, res) => {
   }
 };
 
+// what is benifit of use throw new error apart from return ,409
 const userSignUp = async (req, res) => {
   try {
     const { Mobile_Number, Email, Password } = req.body;
@@ -37,10 +38,12 @@ const userSignUp = async (req, res) => {
       return res.status(409).send({ Message: "user already existing" });
     }
 
+    const hashPassword = await bcrypt.hash(Password, 10);
+
     const mySignUp = await signUpModel.create({
       Mobile_Number,
       Email,
-      Password,
+      Password: hashPassword,
     });
 
     // add id in allUserInformation modal
@@ -50,6 +53,7 @@ const userSignUp = async (req, res) => {
 
     return res.status(200).send({ mySignUp, Message: "signup successFully" });
   } catch (error) {
+    console.log(error);
     return res.status(500).send(error);
   }
 };
@@ -83,7 +87,8 @@ const profileController = async (req, res) => {
       userProfile: userProfile._id,
     });
   } catch (error) {
-    res.status(500).send(error);
+    console.log(error);
+    return res.status(500).send(error);
   }
 };
 
@@ -182,18 +187,26 @@ const BusinessmodelController = async (req, res) => {
 const getproject = async (req, res) => {
   try {
     let project = await ProjectModel.find({});
-    res.send(project);
+    if (project.length == 0) {
+      return res.status(404).send({ Message: "data not found" });
+    }
+    res.status(200).send(project);
   } catch (error) {
     console.log(error);
+    return res.status(500).send({ error });
   }
 };
 const getEvent = async (req, res) => {
   try {
     let event = await Eventmodel.find({});
-    res.send({ event });
+
+    if (event.length == 0) {
+      return res.status(404).send({ Message: "data not found" });
+    }
+    res.status(200).send({ event });
   } catch (error) {
     console.log(error);
-    res.send(error);
+    return res.status(500).send({ error });
   }
 };
 
@@ -201,32 +214,33 @@ const updateEvent = async (req, res) => {
   try {
     const id = req.params.id;
 
-    console.log(id);
     const updateEvent = await Eventmodel.findByIdAndUpdate(
       id,
       { $inc: { Total_user: 1 } }, // Increment Total_user by 1
       { new: true }
     );
-    console.log(updateEvent);
-    //   if (!updatedEvent) {
-    //     return res.status(404).json({ message: 'Event not found', });
-    // }
+    if (!updateEvent) {
+      return res.status(404).json({ message: "Event not found" });
+    }
     res.status(200).json({
       message: "Event updated successfully",
       updateEvent,
     });
-  } catch (error) {
-    console.log(error);
-    res.send(error);
+  } catch (err) {
+    res.status(500).send({ error: "Internal server error", err });
   }
 };
 
 const getAllCourses = async (req, res) => {
   try {
     const courses = await Allcoursemodel.find();
+
+    if (courses.length == 0) {
+      return res.status(404).send({ Message: "data not found" });
+    }
+
     res.status(200).json(courses);
   } catch (error) {
-    console.error(error);
     res.status(500).json({
       message: "An error occurred while fetching courses.",
       error: error.message,
@@ -259,6 +273,7 @@ const createCourseTopic = async (req, res) => {
     });
   }
 };
+
 const filterCourseTopic = async (req, res) => {
   try {
     const { keyword } = req.query;
