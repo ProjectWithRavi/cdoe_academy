@@ -15,17 +15,21 @@ const bcrypt = require("bcrypt");
 const getAllData = async (req, res) => {
   try {
     let allData = await allUserInformation.find({});
-    res.send(allData);
+    if (allData.length == 0) {
+      return res.status(404).send({ Message: "data not found" });
+    }
+    return res.send(allData);
   } catch (error) {
     console.log(error);
-    res.send(error);
+    res.status(500).send(error);
   }
 };
 
-// what is benifit of use throw new error apart from return ,409
+// what is benifit of use throw new error apart from return ,409 , .env file
 const userSignUp = async (req, res) => {
   try {
     const { Mobile_Number, Email, Password } = req.body;
+
     const Validation = zod.object({
       Mobile_Number: zod.number(),
       Email: zod.string(),
@@ -40,10 +44,17 @@ const userSignUp = async (req, res) => {
 
     const hashPassword = await bcrypt.hash(Password, 10);
 
+    const arr = ["tag", "new", "star"];
+    const time2 = Date.now().toString();
+    let result = time2.slice(time2.length - 4, time2.length);
+    const tagName = Math.floor(Math.random() * arr.length);
+    const userName = `@${arr[tagName]}${result}`;
+
     const mySignUp = await signUpModel.create({
       Mobile_Number,
       Email,
       Password: hashPassword,
+      user_name: userName,
     });
 
     // add id in allUserInformation modal

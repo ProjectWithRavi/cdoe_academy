@@ -9,6 +9,9 @@ const signUpSchema = mongoose.Schema({
   Password: {
     type: String,
   },
+  user_name: {
+    type: String,
+  },
 });
 
 const signUpModel = mongoose.model("signUp", signUpSchema);

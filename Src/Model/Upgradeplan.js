@@ -9,6 +9,10 @@ const Upgradeplanschema = mongoose.Schema({
   LastName: {
     type: String,
   },
+  userId: {
+    ref: "signUp",
+    type: mongoose.ObjectId,
+  },
   Pincode: {
     type: Number,
   },
