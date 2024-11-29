@@ -15,7 +15,11 @@ const {
   createCourseTopic,
   filterCourseTopic,
 } = require("../Controller/codeAcademyController");
-const { projectcreate, Eventcreate, AllCourseCreate } = require("../Controller/backController");
+const {
+  projectcreate,
+  Eventcreate,
+  AllCourseCreate,
+} = require("../Controller/backController");
 const Course = require("../Controller/trandingLang");
 const { tryCatchHandler } = require("../utils/tryCatchHandler");
 const upload = require("../Middleware/multer");
@@ -29,28 +33,30 @@ Router.post("/userCourse", userCourseController);
 Router.post("/upgradePlane", upgradePlaneController);
 Router.post("/studentMembership", studentMembershipController);
 Router.post("/Businessmodel", BusinessmodelController);
-Router.post("/project",projectcreate)
-Router.post("/Event",Eventcreate)
+Router.post("/project", projectcreate);
+Router.post("/Event", Eventcreate);
 Router.get("/getproject", getproject);
-Router.get("/getEvent",getEvent);
-Router.put("/updateevent/:id",updateEvent)
-Router.post("/addAllCourses" , AllCourseCreate)
-Router.post("/getAllCourses" , getAllCourses)
+Router.get("/getEvent", getEvent);
+Router.put("/updateevent/:id", updateEvent);
+Router.post("/addAllCourses", AllCourseCreate);
+Router.post("/getAllCourses", getAllCourses);
 
 Router.post("/create-course-topic", createCourseTopic);
 Router.get("/filter-course-topic", filterCourseTopic);
-// Tranding languages
-Router.post('/create', upload.single('thumbnail'),(req, res) => {
+Router.post("/create", upload.single("thumbnail"), (req, res) => {
   tryCatchHandler(Course.CreateCourse, req, res);
-})
-Router.get('/allCourses', (req, res) => {
-  tryCatchHandler(Course.GetCourses, req, res)
-})
-Router.put('/courses/:id', (req, res) => {
-  tryCatchHandler(Course.UpdateCourse, req, res)
 });
-Router.delete('/courses/:id', (req, res) => {
-  tryCatchHandler(Course.DeleteCourse, req, res)
+Router.get("/allCourses", (req, res) => {
+  tryCatchHandler(Course.GetCourses, req, res);
+});
+Router.get("/planCourses", (req, res) => {
+  tryCatchHandler(Course.GetCourses, req, res);
+});
+Router.put("/courses/:id", (req, res) => {
+  tryCatchHandler(Course.UpdateCourse, req, res);
+});
+Router.delete("/courses/:id", (req, res) => {
+  tryCatchHandler(Course.DeleteCourse, req, res);
 });
 
 
