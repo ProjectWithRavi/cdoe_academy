@@ -19,6 +19,7 @@ const { projectcreate, Eventcreate, AllCourseCreate } = require("../Controller/b
 const Course = require("../Controller/trandingLang");
 const { tryCatchHandler } = require("../utils/tryCatchHandler");
 const upload = require("../Middleware/multer");
+const { filterProducts } = require("../Controller/filter");
 const Router = express.Router();
 
 Router.get("/getAllData", getAllData);
@@ -38,6 +39,7 @@ Router.post("/getAllCourses" , getAllCourses)
 
 Router.post("/create-course-topic", createCourseTopic);
 Router.get("/filter-course-topic", filterCourseTopic);
+// Tranding languages
 Router.post('/create', upload.single('thumbnail'),(req, res) => {
   tryCatchHandler(Course.CreateCourse, req, res);
 })
@@ -50,6 +52,11 @@ Router.put('/courses/:id', (req, res) => {
 Router.delete('/courses/:id', (req, res) => {
   tryCatchHandler(Course.DeleteCourse, req, res)
 });
+
+
+Router.post('/filter', filterProducts)
+
+
 module.exports = Router;
 
 // custom error
